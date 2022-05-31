@@ -12,6 +12,4 @@ def bubble_sort(array)
 end
 
 p bubble_sort([4,3,78,2,0,2])
-#what is swapping? taking the number at index i and setting it to i - 1 if the previous one is larger
-#and at the same time setting 
 
