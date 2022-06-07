@@ -1,6 +1,7 @@
 #pegs have two colors depenging on if its both a color and position hit or just color
-#color has to be choosen after which it is placed in the grid.
-#placement starts at [0][0], and goes progressively. when four is placed evalutian happens by the codemaker
+#when four is placed evalution happens by the codemaker
+#code and guess compared. evaluated based on position and color
+#pegboard manipulation, does it need a different class? 
 require 'colorize'
 
 class Board
@@ -8,23 +9,32 @@ class Board
     @@blue = ''.blue
     @@yellow = ''.yellow
     @@green =''.green
-    @@white = ''.white
+    @@cyan = ''.cyan
     @@magenta =''.magenta
-    COLORS = [@@red, @@blue, @@yellow, @@green, @@white, @@magenta]
+    @@white = ''.white
+    @@black = ''.black
+    COLORS = [@@red, @@blue, @@yellow, @@green, @@cyan, @@magenta]
     @@code = 4.times.map { COLORS.sample }
+    @@guess = []
 
-    def initialize(tries, pegs)
-        @tries = tries
-        @pegs = pegs
-        @board = Array.new(tries) { Array.new(pegs, 0)}
+    attr_reader :tries, :game_over
+
+    def initialize
+        @tries = 12
+        @pegs = 4
+        @board = Array.new(@tries) { Array.new(@pegs, 0)}
+        @game_over = false
     end
 
     def display
-        @tries.times {  |i| puts "#{@board[i]}" }
+        for i in @board
+            puts "#{i[0]} #{i[1]} #{i[2]} #{i[3]}" 
+        end
+        puts @@code
     end
 
     def choose_color
-        puts "Choose a color: r/b/y/g/w/m"
+        puts "Choose a color: r/b/y/g/c/m"
         choice = gets.chomp
         case choice
         when 'r'
@@ -35,8 +45,8 @@ class Board
             @color_choice = @@yellow
         when 'g'
             @color_choice = @@green
-        when 'w'
-            @color_choice = @@white
+        when 'c'
+            @color_choice = @@cyan
         when 'm'
             @color_choice = @@magenta
         end
@@ -62,12 +72,55 @@ class Board
     def place_color(r=0, c, color)
         @board[r][c] = color
     end
+
+    def play_round(r)
+        @pegs.times do 
+            self.place_color(r, self.choose_place, self.choose_color)
+            self.display
+        end
+        return @@guess = @board[r]
+    end
+
+    def compare(r, guess)
+        #if same color same place put a black, if only same color put a white
+        if @@code == guess
+            puts "You won!"
+            @game_over = true
+        else
+            count = guess.count do |peg|
+                @@code.include?(peg)
+            end
+            count.times do |c|
+                if @@code[0] == guess[0] 
+                    self.place_color(r, c, @@black) 
+                elsif @@code[1] == guess[1]
+                    self.place_color(r, c, @@black) 
+                elsif @@code[2] == guess[2] 
+                    self.place_color(r, c, @@black) 
+                elsif @@code[3] == guess[3]
+                    self.place_color(r, c, @@black) 
+                else
+                    self.place_color(r, c , @@white)
+                end
+            end
+        end
+    end
+
+    def feedback(r, guess)
+        compare(r, guess)
+        self.display
+    end
 end
 
-game = Board.new(12, 4)
+game = Board.new
+peg_board = Board.new
 game.display
-peg_board = Board.new(12, 4)
 puts "\n"
-peg_board.display
-game.place_color(game.choose_place, game.choose_color)
-game.display
+
+game.tries.times do |i|
+    guess = game.play_round(i)
+    peg_board.feedback(i, guess)
+    if peg_board.game_over 
+        break
+    end
+end
