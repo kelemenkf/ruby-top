@@ -31,6 +31,7 @@ class Board
             puts "#{i[0]} #{i[1]} #{i[2]} #{i[3]}" 
         end
         puts @@code
+        puts (@@red == @@blue)
     end
 
     def choose_color
@@ -82,26 +83,29 @@ class Board
     end
 
     def compare(r, guess)
-        #if same color same place put a black, if only same color put a white
         if @@code == guess
             puts "You won!"
             @game_over = true
         else
+            #somehow only one condition is tested but not an and 
             count = guess.count do |peg|
                 @@code.include?(peg)
             end
-            count.times do |c|
-                if @@code[0] == guess[0] 
-                    self.place_color(r, c, @@black) 
-                elsif @@code[1] == guess[1]
-                    self.place_color(r, c, @@black) 
-                elsif @@code[2] == guess[2] 
-                    self.place_color(r, c, @@black) 
-                elsif @@code[3] == guess[3]
-                    self.place_color(r, c, @@black) 
-                else
-                    self.place_color(r, c , @@white)
+            puts count
+            count_black = 0
+            guess.zip(@@code).each do |peg, digit|
+                if digit == peg 
+                    count_black += 1
                 end
+            end
+            puts count_black
+            count_white = count - count_black
+            puts count_white
+            count_black.times do |c|
+                place_color(r, c, @@black)
+            end
+            count_white.times do |c|
+                place_color(r, c + count_black, @@white)
             end
         end
     end
