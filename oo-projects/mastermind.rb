@@ -1,9 +1,6 @@
-#pegs have two colors depenging on if its both a color and position hit or just color
-#when four is placed evalution happens by the codemaker
-#code and guess compared. evaluated based on position and color
-#pegboard manipulation, does it need a different class? 
 require 'colorize'
 
+#Board with colors
 class Board
     @@red = ''.red
     @@blue = ''.blue
@@ -26,14 +23,15 @@ class Board
         @game_over = false
     end
 
+    #Displays board, with four items in a row
     def display
         for i in @board
             puts "#{i[0]} #{i[1]} #{i[2]} #{i[3]}" 
         end
         puts @@code
-        puts (@@red == @@blue)
     end
 
+    #User input for color choice
     def choose_color
         puts "Choose a color: r/b/y/g/c/m"
         choice = gets.chomp
@@ -54,6 +52,7 @@ class Board
         return @color_choice
     end
 
+    #User input for chossing place of peg
     def choose_place 
         puts "Choose a position: 1/2/3/4"
         choice = gets.chomp
@@ -70,10 +69,12 @@ class Board
         return @pos_choice
     end
 
+    #Places the peg
     def place_color(r=0, c, color)
         @board[r][c] = color
     end
 
+    #One round with choice and placement
     def play_round(r)
         @pegs.times do 
             self.place_color(r, self.choose_place, self.choose_color)
@@ -82,16 +83,23 @@ class Board
         return @@guess = @board[r]
     end
 
+    #Comparing of code to guess, and placing indicator pegs
     def compare(r, guess)
         if @@code == guess
             puts "You won!"
             @game_over = true
         else
-            #somehow only one condition is tested but not an and 
-            count = guess.count do |peg|
-                @@code.include?(peg)
+            count = 0
+            test_guess = guess.clone
+            test_code = @@code.clone
+            for i in guess
+                peg = test_guess.shift
+                if test_code.include?(peg)
+                    count += 1
+                    test_code.delete_at(test_code.index(peg))
+                end
             end
-            puts count
+            p count
             count_black = 0
             guess.zip(@@code).each do |peg, digit|
                 if digit == peg 
@@ -110,6 +118,7 @@ class Board
         end
     end
 
+    #Displays the feedback
     def feedback(r, guess)
         compare(r, guess)
         self.display
@@ -121,10 +130,14 @@ peg_board = Board.new
 game.display
 puts "\n"
 
+#Main game loop
 game.tries.times do |i|
     guess = game.play_round(i)
     peg_board.feedback(i, guess)
     if peg_board.game_over 
+        break
+    elsif peg_board.game_over == false && i == 11
+        puts "You lose"
         break
     end
 end
