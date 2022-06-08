@@ -25,11 +25,10 @@ class Board
   end
 
   # Displays board, with four items in a row
-  def display
+  def display_board
     for i in @board
       puts "#{i[0]} #{i[1]} #{i[2]} #{i[3]}"
     end
-    puts @@code
   end
 
   # User input for color choice
@@ -103,7 +102,9 @@ class Board
       p count
       count_black = 0
       guess.zip(@@code).each do |peg, digit|
-        count_black += 1 if digit == peg
+        if digit == peg
+          count_black += 1
+        end
       end
       puts count_black
       count_white = count - count_black
@@ -116,27 +117,77 @@ class Board
       end
     end
   end
+  
+  #User input in case of maker
+  def create_code
+    new_code = []
+    4.times do 
+      color = self.choose_color
+      new_code.push(color)
+    end
+    @@code.replace(new_code)
+    puts @@code
+  end
+
+  #Guess of computer with random strategy
+  def computer_guess
+    @@guess = 4.times.map { COLORS.sample }
+    return @@guess
+  end
 
   # Displays the feedback
   def feedback(r, guess)
     compare(r, guess)
-    display
+    self.display_board
   end
 end
 
-game = Board.new
-peg_board = Board.new
-game.display
-puts "\n"
+#version where the code is made by the player and the computer guesses
+puts "Choose mode: maker/breaker"
+mode = gets.chomp 
+if mode == 'maker' 
+  #Initial display
+  game = Board.new
+  peg_board = Board.new
+  game.display_board
+  puts "\n"
+  peg_board.display_board
 
-# Main game loop
-game.tries.times do |i|
-  guess = game.play_round(i)
-  peg_board.feedback(i, guess)
-  if peg_board.game_over
-    break
-  elsif peg_board.game_over == false && i == 11
-    puts 'You lose'
-    break
+  #Main game loop with user being codemaker
+  game.create_code
+  game.tries.times do |i|
+    guess = game.computer_guess
+    game.display_board
+    peg_board.feedback(i, guess)
+    if peg_board.game_over
+      puts "Computer wins"
+      break
+    elsif peg_board.game_over == false && i == 11
+      puts "You win"
+      break
+    end
   end
+
+elsif mode == 'breaker'
+  #Initial display
+  game = Board.new
+  peg_board = Board.new
+  game.display_board
+  puts "\n"
+
+
+  #Main game loop with user being codebreaker
+  game.tries.times do |i|
+    guess = game.play_round(i)
+    peg_board.feedback(i, guess)
+    if peg_board.game_over
+      break
+    elsif peg_board.game_over == false && i == 11
+      puts 'You lose'
+      break
+    end
+  end  
+
+else
+  puts 'Incorrect input'
 end
