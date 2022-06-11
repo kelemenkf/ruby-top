@@ -1,4 +1,5 @@
-# needs incorrect input
+#Needs incorrect input
+#Needs display in case of maker 
 require 'colorize'
 
 # Board with colors
@@ -142,7 +143,6 @@ class Board
   end
 end
 
-#version where the code is made by the player and the computer guesses
 puts "Choose mode: maker/breaker"
 mode = gets.chomp 
 if mode == 'maker' 
