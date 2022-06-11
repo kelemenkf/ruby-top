@@ -7,6 +7,8 @@ class Hangman
         end 
         @input_field = "#{@input_field.join()}"
         @game_over = false
+        @wrong_counter = 0
+        @used_letters = []
     end
 
     attr_accessor :word, :input_field, :game_over
@@ -21,11 +23,18 @@ class Hangman
 
     def input_letter
         letter = gets.chomp
-        @word.length.times do |i|
-            if @word[i] == letter
-                @input_field[2*i] = letter
-            else  
-                "Not in word."
+        if @used_letters.include?(letter)
+            puts "Already used!"
+        else
+            @used_letters << letter
+            @word.length.times do |i|
+                if @word[i] == letter
+                    @input_field[2*i] = letter
+                end
+            end
+            if !@word.include?(letter)
+                @wrong_counter += 1
+                puts @wrong_counter
             end
         end
     end
@@ -34,6 +43,12 @@ class Hangman
         if @word == @input_field.gsub(' ', '')
             @game_over = true
             puts "Game over"
+            puts "#{word}"
+        elsif
+            @wrong_counter == 12
+            @game_over = true
+            puts "You lose"
+            puts "The word was #{word}"
         end
     end
 end
