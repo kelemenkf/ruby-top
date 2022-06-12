@@ -1,9 +1,10 @@
----
-:word: clinical
-:input_field: '_ _ _ _ _ _ a _ '
-:game_over: false
-:wrong_counter: 2
-:used_letters:
-- a
-- e
-- b
+--- !ruby/object:Hangman
+word: temperatures
+input_field: '_ _ _ _ _ _ _ _ _ _ _ s '
+game_over: false
+wrong_counter: 2
+used_letters:
+- relaod
+- d
+- s
+game_saved: false
