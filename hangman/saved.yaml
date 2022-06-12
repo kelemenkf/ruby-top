@@ -1,0 +1,9 @@
+---
+:word: clinical
+:input_field: '_ _ _ _ _ _ a _ '
+:game_over: false
+:wrong_counter: 2
+:used_letters:
+- a
+- e
+- b
