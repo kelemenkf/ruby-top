@@ -1,17 +1,16 @@
 --- !ruby/object:Hangman
-word: convenience
-input_field: '_ o _ _ e _ i e _ _ e '
+word: requested
+input_field: 'r e _ _ e _ t e _ '
 game_over: false
-wrong_counter: 5
+wrong_counter: 4
 used_letters:
+- ls
 - a
-- d
 - r
-- e
+- t
 - i
 - o
-- u
-- f
+- e
 game_saved: false
 game_reloaded: false
 letter: save

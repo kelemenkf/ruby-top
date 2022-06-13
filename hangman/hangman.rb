@@ -63,15 +63,15 @@ class Hangman
   end
 
   def save(serialized)
-    saved_game = File.open('saved.yaml', 'w')
+    fname = gets.chomp
+    saved_game = File.open("#{fname}.yaml", 'w')
     saved_game.puts serialized
     saved_game.close
   end
 
-  def self.reload 
-    File.open('saved.yaml') do |f|
+  def self.reload(file)
+    File.open(file) do |f|
         data = YAML.load(f)
-        p data
         return data
     end
   end
@@ -79,7 +79,6 @@ end
 
 game = Hangman.new
 puts 'To save type save, to reload type reload'
-#somehow show previously saved files. type reload and filename to reload it.
 
 until game.game_over
   puts game.input_field
@@ -87,7 +86,9 @@ until game.game_over
   game.checking_winner
   if game.game_saved
     break
-  elsif game.game_saved == false && game.game_reloaded == false && game.letter.length > 1
-    game = Hangman.reload
+  elsif game.game_saved == false && game.game_reloaded == true && game.letter.length > 1
+    puts "Choose a file"
+    file = gets.chomp.to_i
+    game = Hangman.reload("#{file}.yaml")
   end
 end

@@ -1,17 +1,19 @@
 --- !ruby/object:Hangman
-word: convenience
-input_field: '_ o _ _ e _ i e _ _ e '
+word: naval
+input_field: '_ a _ a _ '
 game_over: false
-wrong_counter: 5
+wrong_counter: 9
 used_letters:
+- sa
+- s
 - a
-- d
-- r
 - e
 - i
 - o
 - u
 - f
+- r
+- g
 game_saved: false
 game_reloaded: false
 letter: save
