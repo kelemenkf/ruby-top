@@ -29,7 +29,7 @@ class Hangman
     if @letter == 'save'
       serialized = self.to_yaml
       save(serialized)
-      @game_saved = true
+      @game_saved = truez 
     elsif @letter == 'reload'
         @game_saved = false
         @game_reloaded = true
