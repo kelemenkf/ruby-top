@@ -1,20 +1,68 @@
 class Node
-    attr_accessor :start, :childs
+    attr_accessor :pos, :childs
     def initialize(pos=[0,0])
-        @start = pos
+        @pos = pos
         @childs = []
     end
-
-    #at every point all the options of the knight has to be considered
-    #we can add 1 to the column 2 to the row
-    #or 2 to the column and 1 to the row.
-    #starting node has max 8 childs
-    #every child can have further steps
-    #the graph can be infinite so how deep should it be?
-    #increase only if it is not found.
 end
 
-class Board
+class Tree
+    attr_accessor :root, :steps
+    def initialize(steps, root)
+        @steps = steps
+        @root = Node.new(root)
+    end
+
+    def build_tree(step=self.steps, root=self.root, counter=0)
+        return nil if step < counter
+        rank_steps = [1,2,2,1,-1,-2,-2,-1]
+        file_steps = [-2,-1,1,2,2,1,-1,2]
+        for i in (0..7)
+            r = rank_steps[i] + root.pos[0]
+            c = file_steps[i] + root.pos[1]
+            pos = []
+            pos << r
+            pos << c
+            pos = Node.new(pos)
+            if (0..7).include?(r) && (0..7).include?(c)
+                root.childs << build_tree(step, pos, counter+1)
+            end
+        end
+        root
+    end
+
+
+    def find(value=[0,0], root=self.root, queue = [])
+        return root if root.pos == value
+        #separate levels by an indicator to know level
+        for i in root.childs
+            if !(i.nil?)
+                queue << i
+            end
+        end
+        return "not in tree" if queue.empty?
+        find(value, queue.shift, queue) 
+    end
+
+    def path(root=self.root, value=[0,0], path=[],  target=find(value))
+        return target.pos if root == target
+
+        for i in root.childs
+            if i == target
+                path << root.pos
+                path << path(root.childs[root.childs.index(target)], value, path)
+            end
+        end
+        return path
+    end
+
+
+    def pretty_tree
+        puts "#{root.pos} \n #{root.childs}"
+    end
+end
+
+class Board < Tree
     attr_accessor :board
     def initialize
         @board = Array.new(8) {Array.new(8)}
@@ -30,29 +78,9 @@ class Board
         self.board[r][f] = "K"
         return 
     end
-
-    def build_tree(step=1, counter=0,start=[0,0])
-        root = Node.new(start)
-        self.knight(start[0], start[1])
-
-        return root if step == counter
-
-        rank_steps = [1,2,2,1,-1,-2,-2,-1]
-        file_steps = [-2,-1,1,2,2,1,-1,2]
-        for i in (0..7)
-            r = rank_steps[i] + root.start[0]
-            c = file_steps[i] + root.start[1]
-            pos = []
-            pos << r
-            pos << c
-            if (0..7).include?(r) && (0..7).include?(c)
-                root.childs << build_tree(step, counter+1, pos)
-            end
-        end
-    end
 end
 
-board = Board.new()
-board.to_s
-board.build_tree(10)
-board.to_s
+
+tree = Tree.new(2, [0,0])
+tree.build_tree()
+p tree.path(tree.root, [3,3])
