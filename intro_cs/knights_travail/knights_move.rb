@@ -83,4 +83,4 @@ end
 
 tree = Tree.new(2, [0,0])
 tree.build_tree()
-p tree.path(tree.root, [3,3])
+p tree.path(tree.root, [1,2])
