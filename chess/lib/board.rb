@@ -7,12 +7,12 @@
 class Board
   attr_accessor :display_board, :code_board
   def initialize
-    @display_board = Array.new(8) { Array.new(8) }
-    @code_board = code_board()
+    @display_board = display_board_maker()
+    @code_board = code_board_maker()
   end
 
-  def code_board
-    board = Array.new(8) {Array.new(8)}
+  def code_board_maker
+    board = Array.new(8) { Array.new(8) }
     pos = []
     for i in (1..8)
       for j in ('a'..'h')
@@ -24,6 +24,10 @@ class Board
         board[i] = pos.filter { |x| x.include?((i-8).abs().to_s) }
     end
     board
+  end
+
+  def display_board_maker
+    board = Array.new(8, ' ') { Array.new(8, ' ') }
   end
 
   def encode_position(pos)

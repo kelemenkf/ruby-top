@@ -11,8 +11,8 @@ class Pieces
 end
 
 class Knight < Pieces
-    def initialize
-        super('b1', 'K', 'w')
+    def initialize(position, symbol, color)
+        super
     end
 
     def move(pos)
@@ -22,11 +22,16 @@ class Knight < Pieces
         #possible moves need to be considered. how to move one piece? 
         #command line so you have to type
     end
+
+    def starting_position
+    end
 end
 
-knight = Knight.new
+knight = Knight.new('b1', "\u2658", 'w')
+knight_black = Knight.new('b8', "\u265e", 'b')
 board = Board.new
 board.to_s(board.code_board)
 board.place_pieces(knight)
+board.place_pieces(knight_black)
 board.to_s(board.display_board)
 
