@@ -191,7 +191,9 @@ board.display_starting_position
 board.to_s(board.display_board)
 board.to_s(board.code_board)
 
-puts board.move('c1', 'e3')
+puts board.move('a1', 'd1')
+
+board.to_s(board.display_board)
 
 
 
