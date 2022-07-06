@@ -21,6 +21,18 @@ class Rook < Pieces
         valid = true
       end
     end
+    #array of old_pos start, new_pos end with the moving rules TODO
+    path = []
+    start = old_pos
+    puts start
+    finish = new_pos
+    puts finish
+    for i in (0..rank_moves.length-1)
+      rr = r + rank_moves[i]
+      cc = c + file_moves[i]
+      path << [rr,cc]
+    end
+    puts path.to_s
     return valid
-  end
+  end 
 end

@@ -5,5 +5,5 @@ require_relative './pieces'
 class Pawn < Pieces
   def initialize(position, symbol, color)
     super
-  end
+  end 
 end

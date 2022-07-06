@@ -163,10 +163,8 @@ class Board
 
   def move(old_pos, new_pos)
     new_pos = decode_position(new_pos)
-    puts new_pos
     piece = piece_at(old_pos)
     old_pos = decode_position(old_pos)
-    puts old_pos
     validity = piece.valid(old_pos, new_pos)
     if validity
       remove_pieces(piece)
@@ -183,17 +181,14 @@ class Board
     pos = decode_position(pos)
     return code_board[pos[0]][pos[1]]
   end
+
+  #TODO alternate between turns for different colors
+  def turn_color(piece)
+  end
 end
 
-board = Board.new
-board.to_s(board.pos_board)
-board.display_starting_position
-board.to_s(board.display_board)
-board.to_s(board.code_board)
 
-puts board.move('a1', 'd1')
 
-board.to_s(board.display_board)
 
 
 
