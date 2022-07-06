@@ -11,13 +11,14 @@ require_relative './queen'
 require_relative './king'
 
 class Board
-  attr_accessor :display_board, :code_board
+  attr_accessor :display_board, :pos_board, :code_board
   def initialize
     @display_board = display_board_maker
+    @pos_board = pos_board_maker
     @code_board = code_board_maker
   end
 
-  def code_board_maker
+  def pos_board_maker
     board = Array.new(8) { Array.new(8) }
     pos = []
     (1..8).each do |i|
@@ -36,15 +37,19 @@ class Board
     board = Array.new(8, ' ') { Array.new(8, ' ') }
   end
 
+  def code_board_maker
+    board = Array.new(8) { Array.new(8) }
+  end
+
   def encode_position(pos)
-    code_board[pos[0]][pos[1]]
+    pos_board[pos[0]][pos[1]]
   end
 
   def decode_position(pos)
     result = []
     (0..7).each do |i|
       (0..7).each do |j|
-        next unless pos == code_board[i][j]
+        next unless pos == pos_board[i][j]
 
         result.append(i, j)
       end
@@ -58,21 +63,43 @@ class Board
     end
   end
 
-  def place_pieces(piece)
+  def display_pieces(piece)
     pos = decode_position(piece.position)
     r = pos[0]
     c = pos[1]
     display_board[r][c] = piece.symbol
   end
 
-  def starting_position
+  def remove_pieces(piece)
+    pos = decode_position(piece.position)
+    r = pos[0]
+    c = pos[1]
+    display_board[r][c] = ' '
+  end
+
+  def encode_pieces(piece)
+    pos = decode_position(piece.position)
+    r = pos[0]
+    c = pos[1]
+    code_board[r][c] = piece
+  end
+
+  def decode_pieces(piece)
+    pos = decode_position(piece.position)
+    r = pos[0]
+    c = pos[1]
+    code_board[r][c] = nil
+  end
+
+  def display_starting_position
     knights = []
     knights << opposite_knight_white = Knight.new('g1', "\u2658", 'w')
     knights << same_knight_white = Knight.new('b1', "\u2658", 'w')
     knights << opposite_knight_black = Knight.new('g8', "\u265e", 'b')
     knights << same_knight_black = Knight.new('b8', "\u265e", 'b')
     knights.each do |i|
-      place_pieces(i)
+      display_pieces(i)
+      encode_pieces(i)
     end
 
     bishops = []
@@ -81,7 +108,8 @@ class Board
     bishops << opposite_bishop_black = Bishop.new('c8', "\u265d", 'b')
     bishops << same_bishop_black = Bishop.new('f8', "\u265d", 'b')
     bishops.each do |i|
-      place_pieces(i)
+      display_pieces(i)
+      encode_pieces(i)
     end
 
     pawns = []
@@ -102,7 +130,8 @@ class Board
     pawns << pawn_7_black = Pawn.new('g7', "\u265f", 'b')
     pawns << pawn_8_black = Pawn.new('h7', "\u265f", 'b')
     for i in pawns
-      place_pieces(i)
+      display_pieces(i)
+      encode_pieces(i)
     end
 
     rooks = []
@@ -111,33 +140,58 @@ class Board
     rooks << opposite_rook_black = Rook.new('a8', "\u265c", 'b')
     rooks << same_rook_black = Rook.new('h8', "\u265c", 'b')
     for i in rooks 
-      place_pieces(i)
+      display_pieces(i)
+      encode_pieces(i)
     end
 
     queens = []
     queens << white_queen = Queen.new('d1', "\u2655", 'w')
     queens << black_queen = Queen.new('d8', "\u265b", 'b')
     for i in queens
-      place_pieces(i)
+      display_pieces(i)
+      encode_pieces(i)
     end
 
     kings = []
     kings << white_king = King.new('e1', "\u2654", 'w')
     kings << black_king = King.new('e8', "\u265a", 'b')
     for i in kings
-      place_pieces(i)
+      display_pieces(i)
+      encode_pieces(i)
     end
+  end
+
+  def move(old_pos, new_pos)
+    new_pos = decode_position(new_pos)
+    puts new_pos
+    piece = piece_at(old_pos)
+    old_pos = decode_position(old_pos)
+    puts old_pos
+    validity = piece.valid(old_pos, new_pos)
+    if validity
+      remove_pieces(piece)
+      decode_pieces(piece)
+      piece.position = encode_position(new_pos)
+      display_pieces(piece)
+      encode_pieces(piece)
+    else
+      return "Invalid move"
+    end
+  end
+
+  def piece_at(pos)
+    pos = decode_position(pos)
+    return code_board[pos[0]][pos[1]]
   end
 end
 
 board = Board.new
-board.to_s(board.code_board)
-board.starting_position
+board.to_s(board.pos_board)
+board.display_starting_position
 board.to_s(board.display_board)
-knight = Knight.new('b1', "\u2658", 'w')
-pos = board.decode_position('c3')
-res = knight.valid(pos)
-if res
-  knight.position = 'c3'
-  board.place_pieces(knight)
-end
+board.to_s(board.code_board)
+
+puts board.move('c1', 'e3')
+
+
+
