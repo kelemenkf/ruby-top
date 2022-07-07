@@ -11,11 +11,12 @@ require_relative './queen'
 require_relative './king'
 
 class Board
-  attr_accessor :display_board, :pos_board, :code_board
+  attr_accessor :display_board, :pos_board, :code_board, :white_move
   def initialize
     @display_board = display_board_maker
     @pos_board = pos_board_maker
     @code_board = code_board_maker
+    @white_move = true
   end
 
   def pos_board_maker
@@ -166,10 +167,15 @@ class Board
     piece = piece_at(old_pos)
     old_pos = decode_position(old_pos)
     validity = piece.valid(old_pos, new_pos)
-    path = piece.path(old_pos, new_pos)
-    path_validity = path_checker(path)
-    puts path_validity  
-    if validity && path_validity
+    unless piece.class == Knight
+      path = piece.path(old_pos, new_pos) 
+      path_validity = path_checker(path)
+      puts path_validity
+    end
+    if validity 
+      if piece.class == Pawn
+        piece.moved = true
+      end
       remove_pieces(piece)
       decode_pieces(piece)
       piece.position = encode_position(new_pos)
@@ -186,9 +192,9 @@ class Board
   end
 
   def path_checker(path)
+    #TODO for taking a piece, the last ones should not be in the path? 
     path_valid = true
     for i in path
-      #see if on the code_board at those positions the value is nil
       r = i[0]
       c = i[1]
       if code_board[r][c] != nil
@@ -198,8 +204,12 @@ class Board
     return path_valid
   end
 
-  #TODO alternate between turns for different colors
   def turn_color(piece)
+    if piece.color == 'b'
+      white_move = true
+    elsif piece.color == 'w'
+      white_move = false
+    end
   end
 end
 

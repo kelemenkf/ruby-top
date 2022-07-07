@@ -26,7 +26,6 @@ class Bishop < Pieces
 
   def path(old_pos, new_pos)
     path = []
-    path[0] = old_pos
     r = old_pos[0]
     c = old_pos[1]
     rr = new_pos[0]
@@ -50,6 +49,6 @@ class Bishop < Pieces
         path << [r, c]
       end
     end
-    return path
+    p path
   end
 end
