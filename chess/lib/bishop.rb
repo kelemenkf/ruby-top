@@ -23,4 +23,33 @@ class Bishop < Pieces
     end 
     return valid
   end
+
+  def path(old_pos, new_pos)
+    path = []
+    path[0] = old_pos
+    r = old_pos[0]
+    c = old_pos[1]
+    rr = new_pos[0]
+    cc = new_pos[1]
+    for i in (0..(r-c).abs)
+      if rr > r && cc > c
+        r += 1
+        c += 1
+        path << [r, c]
+      elsif rr < r && cc > c
+        r -= 1
+        c += 1
+        path << [r, c]
+      elsif rr > r && cc < c
+        r += 1
+        c -= 1
+        path << [r, c]
+      elsif rr < r && cc < c
+        r -= 1
+        c -= 1
+        path << [r, c]
+      end
+    end
+    return path
+  end
 end

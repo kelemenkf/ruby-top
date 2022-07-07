@@ -166,20 +166,36 @@ class Board
     piece = piece_at(old_pos)
     old_pos = decode_position(old_pos)
     validity = piece.valid(old_pos, new_pos)
-    if validity
+    path = piece.path(old_pos, new_pos)
+    path_validity = path_checker(path)
+    puts path_validity  
+    if validity && path_validity
       remove_pieces(piece)
       decode_pieces(piece)
       piece.position = encode_position(new_pos)
       display_pieces(piece)
       encode_pieces(piece)
     else
-      return "Invalid move"
+      puts "Invalid move"
     end
   end
 
   def piece_at(pos)
     pos = decode_position(pos)
     return code_board[pos[0]][pos[1]]
+  end
+
+  def path_checker(path)
+    path_valid = true
+    for i in path
+      #see if on the code_board at those positions the value is nil
+      r = i[0]
+      c = i[1]
+      if code_board[r][c] != nil
+        path_valid = false
+      end
+    end
+    return path_valid
   end
 
   #TODO alternate between turns for different colors
